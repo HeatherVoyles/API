@@ -63,7 +63,13 @@ function validatePhoto(req, res, next) {
 }
 
 app.post('/dispatch', function(req, res) {
-})
+    if (req.body.fname === null :: req.body.fname === undefined) {
+    return res.json({'status':'error', 'message':'Please Enter Your First Name'});
+}
+    else {
+        return re.json({'status':'That Is A Cool Name.'});
+        }
+    })
 
 
 var photoRouter = express.Router();
