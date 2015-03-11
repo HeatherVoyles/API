@@ -63,13 +63,61 @@ function validatePhoto(req, res, next) {
 }
 
 app.post('/dispatch', function(req, res) {
-    if (req.body.fname === null :: req.body.fname === undefined) {
-    return res.json({'status':'error', 'message':'Please Enter Your First Name'});
-}
+    if (req.body.fname === null || req.body.fname === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Enter Your First Name'});
+    }
+    else if (req.body.lname === null || req.body.lname === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Enter Your Last Name'});
+    }
+    else if (req.body.phone === null || req.body.phone === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Enter Your Digits'});
+    }
+    else if (req.body.address === null || req.body.address === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Enter Your Address'});
+    }
+    else if (req.body.postalcode === null || req.body.postalcode === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Enter Your Postal Code'});
+    }
+
+    else if (req.body.email === null || req.body.email === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Input Email Address For Notifications'});
+    }
+
+    else if (req.body.plowtype === null || req.body.plowtype === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Select Desired Plow Type'});
+    }
+
+
+    else if (req.body.plowtime === null || req.body.plowtime === undefined) {
+        return res.json({'status': 'error', 'message': 'Please Specify Desired Time'});
+    }
+
     else {
-        return re.json({'status':'That Is A Cool Name.'});
-        }
-    })
+        var sql = 'INSERT INTO dispatch (fname, lname, phone, address, postalcode, plowtype, notes, email) VALUES ($1,$2,$3,$4,$5,$6,$7, $8) RETURNING id';
+        var data = [
+            req.body.fname,
+            req.body.lname,
+            req.body.phone,
+            req.body.address,
+            req.body.postalcode,
+            req.body.plowtype,
+            req.body.notes,
+            req.body.email
+        ];
+        postgres.client.query(sql, data, function (err, result) {
+            if (err) {
+                console.error(err);
+                res.statusCode = 500;
+                return res.json({
+                    errors: ['Could Not Dispatch']
+                });
+            }
+            if (result.rows.length > 0) {
+                return res.json({'status': 'Success. Fist Bump.'});
+            }
+        });
+    }
+})
 
 
 var photoRouter = express.Router();
